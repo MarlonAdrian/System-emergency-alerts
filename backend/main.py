@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from backend.agents.emergency_agent import EmergencyAgent
+from agents.emergency_agent import EmergencyAgent
 
 emergency_agent = EmergencyAgent()
 ALERTS = []
