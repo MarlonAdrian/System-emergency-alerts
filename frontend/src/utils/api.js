@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// URL del backend (cambiar según donde esté deployed)
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
@@ -45,3 +44,4 @@ export const getAlerts = async () => {
   }
 };
 
+export default api;

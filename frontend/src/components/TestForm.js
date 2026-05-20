@@ -5,6 +5,7 @@ import './TestForm.css';
 function TestForm({ onAlert }) {
   const [phone, setPhone] = useState('+593999999999');
   const [symptoms, setSymptoms] = useState('');
+  const [preExisting, setPreExisting] = useState('');
   const [hospital, setHospital] = useState('Hospital Metropolitano');
   const [email, setEmail] = useState('emergencias@test.ec');
   const [loading, setLoading] = useState(false);
@@ -27,12 +28,14 @@ function TestForm({ onAlert }) {
       const result = await sendEmergency({
         patient_phone: phone,
         symptoms: symptoms,
+        pre_existing: preExisting,
         hospital: hospital,
         hospital_email: email
       });
 
       setResponse(result);
       setSymptoms('');
+      setPreExisting('');
       onAlert();
     } catch (err) {
       setError(err.message || 'Error enviando emergencia');
@@ -63,7 +66,7 @@ function TestForm({ onAlert }) {
             type="text"
             value={hospital}
             onChange={(e) => setHospital(e.target.value)}
-            placeholder="Nombre del hospital"
+            placeholder="Hospital Metropolitano"
             className="form-input"
           />
         </div>
@@ -84,9 +87,20 @@ function TestForm({ onAlert }) {
           <textarea
             value={symptoms}
             onChange={(e) => setSymptoms(e.target.value)}
-            placeholder="Describe los síntomas del paciente..."
+            placeholder="Describe los síntomas del paciente... (ej: infarto, dolor pecho, dificultad respiratoria)"
             className="form-textarea"
-            rows="4"
+            rows="3"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>💊 Pre-existencias (opcional)</label>
+          <textarea
+            value={preExisting}
+            onChange={(e) => setPreExisting(e.target.value)}
+            placeholder="Ej: cardiopatía, diabetes, cáncer, asma... (separadas por comas)"
+            className="form-textarea"
+            rows="2"
           />
         </div>
 
@@ -100,11 +114,12 @@ function TestForm({ onAlert }) {
       </form>
 
       {response && (
-        <div className={`response response-${response.success ? 'success' : 'error'}`}>
+        <div className={`response response-${response.risk_level.toLowerCase()}`}>
           <h3>✅ Alerta Procesada</h3>
           <p><strong>Estado:</strong> {response.policy_status}</p>
           <p><strong>Aseguradora:</strong> {response.insurance_company}</p>
-          <p><strong>Nivel de Riesgo:</strong> {response.risk_level}</p>
+          <p><strong>Nivel de Riesgo:</strong> <span className={`risk-badge ${response.risk_level.toLowerCase()}`}>{response.risk_level}</span></p>
+          <p><strong>Recomendación:</strong> {response.recommendation}</p>
           <p><strong>Notificaciones:</strong> {response.notifications_sent} enviadas</p>
           <small>ID: {response.alert_id}</small>
         </div>

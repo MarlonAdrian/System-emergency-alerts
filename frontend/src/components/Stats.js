@@ -4,7 +4,7 @@ import './Stats.css';
 function Stats({ stats, alerts }) {
   const statCards = [
     {
-      label: '🚨 Emergencias Procesadas',
+      label: '🚨 Emergencias',
       value: stats.total_emergencies || 0,
       color: '#ef4444'
     },

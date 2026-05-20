@@ -1,0 +1,164 @@
+{
+  "alerts": [
+    {
+      "alert_id": "ALERT_1779238174.68556",
+      "timestamp": "2026-05-20T10:49:34.693876",
+      "patient_phone": "+593999999999 (Juan - Saludsa)",
+      "symptoms": "Infarto",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "CRITICAL",
+      "recommendation": "🚨 ALERTA CRÍTICA - Intervención quirúrgica inmediata requerida. Activar protocolo de emergencia.",
+      "risk_scores": {
+        "symptom": 1.0,
+        "pre_existing": 0.0,
+        "total": 0.61
+      }
+    },
+    {
+      "alert_id": "ALERT_1779238215.144637",
+      "timestamp": "2026-05-20T10:50:15.144637",
+      "patient_phone": "+593999999999 (Juan)",
+      "symptoms": "mareos",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "LOW",
+      "recommendation": "✅ RIESGO BAJO - Procesamiento estándar. Monitoreo de rutina.",
+      "risk_scores": {
+        "symptom": 0.15,
+        "pre_existing": 0.0,
+        "total": 0.1
+      }
+    },
+    {
+      "alert_id": "ALERT_1779238339.430278",
+      "timestamp": "2026-05-20T10:52:19.430278",
+      "patient_phone": "+593999999999 (Juan)",
+      "symptoms": "mareos",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "LOW",
+      "recommendation": "✅ RIESGO BAJO - Procesamiento estándar. Monitoreo de rutina.",
+      "risk_scores": {
+        "symptom": 0.15,
+        "pre_existing": 0.0,
+        "total": 0.1
+      }
+    },
+    {
+      "alert_id": "ALERT_1779238374.199322",
+      "timestamp": "2026-05-20T10:52:54.199322",
+      "patient_phone": "+593999999111",
+      "symptoms": "dolor leve",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "LOW",
+      "recommendation": "✅ RIESGO BAJO - Procesamiento estándar. Monitoreo de rutina.",
+      "risk_scores": {
+        "symptom": 0.15,
+        "pre_existing": 0.0,
+        "total": 0.1
+      }
+    },
+    {
+      "alert_id": "ALERT_1779238438.389164",
+      "timestamp": "2026-05-20T10:53:58.389164",
+      "patient_phone": "+593999999999 (Juan)",
+      "symptoms": "mareos",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "LOW",
+      "recommendation": "✅ RIESGO BAJO - Procesamiento estándar. Monitoreo de rutina.",
+      "risk_scores": {
+        "symptom": 0.15,
+        "pre_existing": 0.0,
+        "total": 0.1
+      }
+    },
+    {
+      "alert_id": "ALERT_1779238469.726378",
+      "timestamp": "2026-05-20T10:54:29.726378",
+      "patient_phone": "+593999999111",
+      "symptoms": "dolor leve",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "LOW",
+      "recommendation": "✅ RIESGO BAJO - Procesamiento estándar. Monitoreo de rutina.",
+      "risk_scores": {
+        "symptom": 0.15,
+        "pre_existing": 0.0,
+        "total": 0.1
+      }
+    },
+    {
+      "alert_id": "ALERT_1779238563.81822",
+      "timestamp": "2026-05-20T10:56:03.818220",
+      "patient_phone": "+593977777777 (Carlos - Bupa, cardiopatía)",
+      "symptoms": "sangrado, presion baja",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "LOW",
+      "recommendation": "✅ RIESGO BAJO - Procesamiento estándar. Monitoreo de rutina.",
+      "risk_scores": {
+        "symptom": 0.2,
+        "pre_existing": 0.0,
+        "total": 0.14
+      }
+    },
+    {
+      "alert_id": "ALERT_1779238622.164331",
+      "timestamp": "2026-05-20T10:57:02.164331",
+      "patient_phone": "+593977777777 (Carlos - Bupa, cardiopatía)",
+      "symptoms": "sangrado, presión baja",
+      "hospital": "Hospital Metropolitano",
+      "hospital_email": "emergencias@test.ec",
+      "is_insured": false,
+      "insurance_company": "N/A",
+      "policy_status": "SIN SEGURO",
+      "policy_number": "N/A",
+      "pre_existing_conditions": [],
+      "risk_level": "LOW",
+      "recommendation": "✅ RIESGO BAJO - Procesamiento estándar. Monitoreo de rutina.",
+      "risk_scores": {
+        "symptom": 0.55,
+        "pre_existing": 0.0,
+        "total": 0.35
+      }
+    }
+  ]
+}

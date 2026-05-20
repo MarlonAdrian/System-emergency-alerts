@@ -1,0 +1,31 @@
+{
+  "policies": [
+    {
+      "phone": "+593999999999",
+      "name": "Juan Pérez García",
+      "insurance_company": "Saludsa",
+      "plan_type": "Star Plus",
+      "policy_number": "POL-SALUDSA-2024-001",
+      "status": "active",
+      "pre_existing_conditions": ["diabetes tipo 2", "hipertensión"]
+    },
+    {
+      "phone": "+593988888888",
+      "name": "María López Rodríguez",
+      "insurance_company": "Humana",
+      "plan_type": "Premium",
+      "policy_number": "POL-HUMANA-2024-002",
+      "status": "active",
+      "pre_existing_conditions": ["asma", "alergia"]
+    },
+    {
+      "phone": "+593977777777",
+      "name": "Carlos Reyes Morales",
+      "insurance_company": "Bupa",
+      "plan_type": "Global",
+      "policy_number": "POL-BUPA-2024-003",
+      "status": "active",
+      "pre_existing_conditions": ["cardiopatía", "hipertensión"]
+    }
+  ]
+}

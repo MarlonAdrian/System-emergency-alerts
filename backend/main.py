@@ -2,26 +2,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-import os
 from datetime import datetime
 import logging
 
-from backend.services.notion_service import NotionService
-from backend.services.notification_service import NotificationService
-from backend.agents.emergency_agent import EmergencyAgent
-from backend.models.emergency import EmergencyRequest, EmergencyResponse
-import os
-from dotenv import load_dotenv
-
-# Cargar .env
-load_dotenv()
-# Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Alerta Temprana - Emergencias", version="1.0")
+app = FastAPI(title="🚨 Alerta Temprana", version="1.0")
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,115 +18,122 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Services
-notion_service = NotionService()
-notification_service = NotificationService()
+from backend.agents.emergency_agent import EmergencyAgent
+
 emergency_agent = EmergencyAgent()
+ALERTS = []
+
+# BD de pólizas - SIMPLE
+POLICIES = {
+    "+593999999999": {"name": "Juan Pérez", "company": "Saludsa", "pre_existing": ["diabetes", "hipertensión"]},
+    "+593988888888": {"name": "María López", "company": "Humana", "pre_existing": ["asma"]},
+    "+593977777777": {"name": "Carlos Reyes", "company": "Bupa", "pre_existing": ["cardiopatía"]}
+}
+
+class EmergencyRequest(BaseModel):
+    patient_phone: str
+    symptoms: str
+    pre_existing: Optional[str] = ""
+    hospital: str
+    hospital_email: str
+
+class EmergencyResponse(BaseModel):
+    success: bool
+    alert_id: str
+    message: str
+    policy_status: str
+    insurance_company: str
+    risk_level: str
+    recommendation: str
+    notifications_sent: int
+    timestamp: str
 
 @app.on_event("startup")
 async def startup():
-    logger.info("✅ Sistema de Alerta Temprana iniciado")
+    logger.info("✅ Sistema iniciado")
 
 @app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {"status": "ok", "timestamp": datetime.now().isoformat()}
+async def health():
+    return {"status": "ok"}
 
 @app.post("/webhook/emergency", response_model=EmergencyResponse)
-async def receive_emergency(emergency: EmergencyRequest):
-    """
-    Webhook que recibe notificación de emergencia del hospital
+async def emergency(data: EmergencyRequest):
+    logger.info(f"\n{'='*60}")
+    logger.info(f"EMERGENCIA: {data.patient_phone}")
     
-    Flujo:
-    1. Recibe paciente que llegó a emergencia
-    2. Valida póliza en Notion
-    3. Agente revisa pre-existencias
-    4. Notifica hospital + aseguradora
-    5. Retorna confirmación
-    """
-    try:
-        logger.info(f"🚨 EMERGENCIA RECIBIDA: {emergency.patient_phone}")
-        
-        # PASO 1: Buscar póliza en Notion
-        policy = notion_service.get_policy(emergency.patient_phone)
-        
-        if policy:
-            logger.info(f"✅ Póliza encontrada: {policy['insurance_company']}")
-            is_insured = True
-            policy_status = "VÁLIDA"
-            insurance_company = policy.get('insurance_company', 'N/A')
-            plan_type = policy.get('plan_type', 'N/A')
-            pre_existing = policy.get('pre_existing_conditions', [])
-        else:
-            logger.warning(f"❌ Sin póliza: {emergency.patient_phone}")
-            is_insured = False
-            policy_status = "SIN SEGURO"
-            insurance_company = "N/A"
-            plan_type = "N/A"
-            pre_existing = []
-        
-        # PASO 2: Agente analiza pre-existencias
-        agent_analysis = emergency_agent.analyze(
-            patient_phone=emergency.patient_phone,
-            symptoms=emergency.symptoms,
-            pre_existing_conditions=pre_existing,
-            is_insured=is_insured
-        )
-        
-        # PASO 3: Crear alerta
-        alert = {
-            "alert_id": f"ALERT_{datetime.now().timestamp()}",
-            "timestamp": datetime.now().isoformat(),
-            "patient_phone": emergency.patient_phone,
-            "symptoms": emergency.symptoms,
-            "hospital": emergency.hospital,
-            "is_insured": is_insured,
-            "insurance_company": insurance_company,
-            "plan_type": plan_type,
-            "policy_status": policy_status,
-            "pre_existing_conditions": pre_existing,
-            "agent_risk_level": agent_analysis['risk_level'],
-            "agent_recommendation": agent_analysis['recommendation']
-        }
-        
-        # PASO 4: Notificar hospital + aseguradora
-        notifications_sent = notification_service.send_alerts(
-            alert=alert,
-            hospital_email=emergency.hospital_email,
-            insurance_email=insurance_company if is_insured else None
-        )
-        
-        logger.info(f"📧 Notificaciones enviadas: {notifications_sent}")
-        
-        return EmergencyResponse(
-            success=True,
-            alert_id=alert['alert_id'],
-            message=f"Alerta procesada. {'Asegurado' if is_insured else 'Sin seguro'}.",
-            policy_status=policy_status,
-            insurance_company=insurance_company,
-            risk_level=agent_analysis['risk_level'],
-            notifications_sent=notifications_sent,
-            timestamp=datetime.now().isoformat()
-        )
+    # Verificar si está en BD
+    policy = POLICIES.get(data.patient_phone)
     
-    except Exception as e:
-        logger.error(f"❌ Error procesando emergencia: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+    if policy:
+        insured = True
+        company = policy["company"]
+        status = "VÁLIDA"
+        logger.info(f"✅ ASEGURADO: {policy['name']} ({company})")
+    else:
+        insured = False
+        company = "N/A"
+        status = "SIN SEGURO"
+        logger.info(f"❌ SIN SEGURO")
+    
+    # PRE-EXISTENCIAS: SOLO del formulario, NUNCA de la BD
+    pre_existing = []
+    if data.pre_existing.strip():
+        pre_existing = [c.strip() for c in data.pre_existing.split(',') if c.strip()]
+    
+    logger.info(f"Pre-existencias: {pre_existing}")
+    logger.info(f"Síntomas: {data.symptoms}")
+    
+    # Agente analiza (SOLO con lo que el usuario envía)
+    analysis = emergency_agent.analyze(
+        patient_phone=data.patient_phone,
+        symptoms=data.symptoms,
+        pre_existing_conditions=pre_existing,  # SOLO del formulario
+        is_insured=insured
+    )
+    
+    logger.info(f"Riesgo: {analysis['risk_level']}")
+    logger.info(f"{'='*60}\n")
+    
+    # Guardar alerta
+    alert = {
+        "alert_id": f"ALERT_{datetime.now().timestamp()}",
+        "timestamp": datetime.now().isoformat(),
+        "patient_phone": data.patient_phone,
+        "symptoms": data.symptoms,
+        "risk_level": analysis['risk_level'],
+        "is_insured": insured,
+        "insurance_company": company
+    }
+    ALERTS.append(alert)
+    
+    return EmergencyResponse(
+        success=True,
+        alert_id=alert['alert_id'],
+        message="Alerta procesada",
+        policy_status=status,
+        insurance_company=company,
+        risk_level=analysis['risk_level'],
+        recommendation=analysis['recommendation'],
+        notifications_sent=1,
+        timestamp=datetime.now().isoformat()
+    )
 
 @app.get("/alerts/recent")
-async def get_recent_alerts(limit: int = 10):
-    """Obtiene alertas recientes"""
-    # TODO: Implementar persistencia en Elasticsearch o Notion
-    return {"message": "Endpoint para obtener alertas recientes"}
+async def get_alerts(limit: int = 10):
+    return ALERTS[-limit:]
 
 @app.get("/stats")
-async def get_stats():
-    """Estadísticas del sistema"""
+async def stats():
+    total = len(ALERTS)
+    insured = sum(1 for a in ALERTS if a['is_insured'])
+    uninsured = total - insured
+    high_risk = sum(1 for a in ALERTS if a['risk_level'] in ['CRITICAL', 'HIGH'])
+    
     return {
-        "total_emergencies": 0,  # TODO: contar desde persistencia
-        "insured_count": 0,
-        "uninsured_count": 0,
-        "high_risk_count": 0
+        "total_emergencies": total,
+        "insured_count": insured,
+        "uninsured_count": uninsured,
+        "high_risk_count": high_risk
     }
 
 if __name__ == "__main__":
